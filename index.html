@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>CleanZ</title>
+
+<style>
+
+/* =====================================================
+   BASIC
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+/* =====================================================
+   SPLASH SCREEN
+===================================================== */
+
+.splash {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffffff;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   LOGO CONTAINER
+===================================================== */
+
+.logo {
+    width: min(78vw, 430px);
+
+    aspect-ratio: 1 / 1.08;
+
+    position: relative;
+
+    transform-origin: center;
+}
+
+
+/* =====================================================
+   SVG
+===================================================== */
+
+svg {
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+}
+
+
+/* =====================================================
+   COLORS
+===================================================== */
+
+.dark {
+    stroke: #101b43;
+
+    fill: none;
+
+    stroke-width: 11;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.blue {
+    fill: #65a8ed;
+}
+
+
+/* =====================================================
+   WATER DROP
+===================================================== */
+
+.drop {
+
+    opacity: 0;
+
+    transform-origin: center;
+
+    animation:
+        dropFall
+        0.72s
+        cubic-bezier(.18,.85,.25,1)
+        0.05s
+        forwards;
+}
+
+
+/* =====================================================
+   RIPPLE
+===================================================== */
+
+.ripple {
+
+    fill: none;
+
+    stroke: #65a8ed;
+
+    stroke-width: 4;
+
+    opacity: 0;
+
+    transform-box: fill-box;
+
+    transform-origin: center;
+
+    animation:
+        rippleEffect
+        0.75s
+        ease-out
+        0.55s
+        forwards;
+}
+
+
+/* =====================================================
+   WATER
+===================================================== */
+
+.water {
+
+    transform-box: fill-box;
+
+    transform-origin: center;
+
+    transform: translateY(100px);
+
+    animation:
+        waterRise
+        1.1s
+        cubic-bezier(.2,.8,.2,1)
+        0.55s
+        forwards;
+}
+
+
+/* =====================================================
+   OUTER CIRCLE
+===================================================== */
+
+.circle {
+
+    stroke-dasharray: 900;
+
+    stroke-dashoffset: 900;
+
+    animation:
+        drawCircle
+        1.1s
+        cubic-bezier(.4,0,.2,1)
+        0.55s
+        forwards;
+}
+
+
+/* =====================================================
+   INNER CURVE
+===================================================== */
+
+.innerCurve {
+
+    stroke-dasharray: 300;
+
+    stroke-dashoffset: 300;
+
+    animation:
+        drawInner
+        0.65s
+        cubic-bezier(.4,0,.2,1)
+        0.95s
+        forwards;
+}
+
+
+/* =====================================================
+   ROOF
+===================================================== */
+
+.roof {
+
+    stroke-dasharray: 600;
+
+    stroke-dashoffset: 600;
+
+    animation:
+        roofDraw
+        0.75s
+        cubic-bezier(.2,.8,.2,1)
+        1.0s
+        forwards;
+}
+
+
+/* =====================================================
+   ROOF BOUNCE
+===================================================== */
+
+.roofBounce {
+
+    transform-origin: center;
+
+    animation:
+        roofBounce
+        0.45s
+        cubic-bezier(.2,.9,.3,1)
+        1.65s
+        forwards;
+}
+
+
+/* =====================================================
+   SPARKLES
+===================================================== */
+
+.sparkle {
+
+    opacity: 0;
+
+    transform-box: fill-box;
+
+    transform-origin: center;
+
+    animation:
+        sparklePop
+        0.55s
+        cubic-bezier(.2,1.4,.4,1)
+        forwards;
+}
+
+
+.sparkle.one {
+
+    animation-delay: 1.55s;
+}
+
+
+.sparkle.two {
+
+    animation-delay: 1.72s;
+}
+
+
+/* =====================================================
+   CLEAN TEXT
+===================================================== */
+
+.cleanText {
+
+    opacity: 0;
+
+    transform:
+        translateY(25px);
+
+    animation:
+        textAppear
+        0.7s
+        cubic-bezier(.2,.8,.2,1)
+        1.75s
+        forwards;
+}
+
+
+/* =====================================================
+   Z
+===================================================== */
+
+.zText {
+
+    opacity: 0;
+
+    transform-box: fill-box;
+
+    transform-origin: center;
+
+    animation:
+        zPop
+        0.65s
+        cubic-bezier(.2,1.5,.4,1)
+        2.05s
+        forwards;
+}
+
+
+/* =====================================================
+   FINAL GLOW
+===================================================== */
+
+.logo::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 20%;
+    top: 20%;
+
+    width: 60%;
+    height: 60%;
+
+    border-radius: 50%;
+
+    background:
+        rgba(101,168,237,0.10);
+
+    filter: blur(35px);
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    animation:
+        finalGlow
+        1.2s
+        ease
+        2.35s
+        forwards;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+
+/* Water drop */
+
+@keyframes dropFall {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(-240px)
+            scale(.45);
+    }
+
+    20% {
+
+        opacity: 1;
+    }
+
+    78% {
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    88% {
+
+        transform:
+            translateY(8px)
+            scale(1.15,.85);
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* Ripple */
+
+@keyframes rippleEffect {
+
+    0% {
+
+        opacity: .8;
+
+        transform:
+            scale(.15);
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            scale(2.2);
+    }
+}
+
+
+/* Water */
+
+@keyframes waterRise {
+
+    0% {
+
+        transform:
+            translateY(100px);
+    }
+
+    65% {
+
+        transform:
+            translateY(-5px);
+    }
+
+    82% {
+
+        transform:
+            translateY(3px);
+    }
+
+    100% {
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* Circle */
+
+@keyframes drawCircle {
+
+    to {
+
+        stroke-dashoffset: 0;
+    }
+}
+
+
+/* Inner circle */
+
+@keyframes drawInner {
+
+    to {
+
+        stroke-dashoffset: 0;
+    }
+}
+
+
+/* Roof */
+
+@keyframes roofDraw {
+
+    to {
+
+        stroke-dashoffset: 0;
+    }
+}
+
+
+/* Roof bounce */
+
+@keyframes roofBounce {
+
+    0% {
+
+        transform:
+            translateY(0);
+    }
+
+    35% {
+
+        transform:
+            translateY(8px);
+    }
+
+    70% {
+
+        transform:
+            translateY(-4px);
+    }
+
+    100% {
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* Sparkle */
+
+@keyframes sparklePop {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            scale(0)
+            rotate(-30deg);
+    }
+
+    60% {
+
+        opacity: 1;
+
+        transform:
+            scale(1.25)
+            rotate(10deg);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            scale(1)
+            rotate(0deg);
+    }
+}
+
+
+/* Clean */
+
+@keyframes textAppear {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(25px);
+    }
+
+    70% {
+
+        opacity: 1;
+
+        transform:
+            translateY(-3px);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* Z */
+
+@keyframes zPop {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            scale(0);
+    }
+
+    65% {
+
+        opacity: 1;
+
+        transform:
+            scale(1.2);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            scale(1);
+    }
+}
+
+
+/* Glow */
+
+@keyframes finalGlow {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            scale(.5);
+    }
+
+    50% {
+
+        opacity: 1;
+
+        transform:
+            scale(1.1);
+    }
+
+    100% {
+
+        opacity: .45;
+
+        transform:
+            scale(1);
+    }
+}
+
+
+/* =====================================================
+   REPLAY BUTTON
+===================================================== */
+
+.replay {
+
+    position: fixed;
+
+    bottom: 28px;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    padding:
+        10px
+        22px;
+
+    border: none;
+
+    border-radius: 30px;
+
+    background:
+        #101b43;
+
+    color: white;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    opacity: 0;
+
+    animation:
+        buttonAppear
+        .5s
+        ease
+        3.2s
+        forwards;
+}
+
+
+.replay:hover {
+
+    opacity: 1;
+}
+
+
+@keyframes buttonAppear {
+
+    to {
+
+        opacity: .8;
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:600px) {
+
+    .logo {
+
+        width: 82vw;
+
+        max-width: 400px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     SPLASH SCREEN
+===================================================== -->
+
+<div class="splash">
+
+
+    <div class="logo">
+
+
+        <svg
+            viewBox="0 0 500 530"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+
+
+            <!-- =========================================
+                 WATER DROP
+            ========================================== -->
+
+            <path
+                class="blue drop"
+
+                d="
+                M250 60
+
+                C230 90
+                215 110
+                215 132
+
+                C215 155
+                231 171
+                250 171
+
+                C269 171
+                285 155
+                285 132
+
+                C285 110
+                270 90
+                250 60
+
+                Z
+                "
+            />
+
+
+            <!-- =========================================
+                 RIPPLE
+            ========================================== -->
+
+            <ellipse
+                class="ripple"
+
+                cx="250"
+                cy="315"
+
+                rx="65"
+                ry="25"
+            />
+
+
+            <!-- =========================================
+                 WATER
+            ========================================== -->
+
+            <path
+                class="blue water"
+
+                d="
+                M145 330
+
+                C175 300
+                198 330
+                225 337
+
+                C255 345
+                270 358
+                300 345
+
+                C330 332
+                350 310
+                365 320
+
+                L365 375
+
+                C365 405
+                335 425
+                300 425
+
+                L210 425
+
+                C175 425
+                145 405
+                145 375
+
+                Z
+                "
+            />
+
+
+            <!-- =========================================
+                 MAIN CIRCLE
+            ========================================== -->
+
+            <path
+                class="dark circle"
+
+                d="
+                M155 265
+
+                C128 285
+                113 320
+                113 355
+
+                C113 430
+                174 478
+                250 478
+
+                C326 478
+                387 430
+                387 355
+
+                C387 334
+                382 314
+                374 296
+                "
+            />
+
+
+            <!-- =========================================
+                 INNER CURVE
+            ========================================== -->
+
+            <path
+                class="dark innerCurve"
+
+                style="
+                    stroke-width:8;
+                "
+
+                d="
+                M168 275
+
+                C151 295
+                144 319
+                144 345
+                "
+            />
+
+
+            <!-- =========================================
+                 ROOF
+            ========================================== -->
+
+            <g class="roofBounce">
+
+                <path
+                    class="dark roof"
+
+                    d="
+                    M110 220
+                    L250 110
+                    L390 220
+                    "
+                />
+
+
+                <!-- Small roof hook -->
+
+                <path
+                    class="dark roof"
+
+                    d="
+                    M230 125
+
+                    C230 103
+                    242 92
+                    258 92
+                    "
+                />
+
+            </g>
+
+
+            <!-- =========================================
+                 SPARKLE 1
+            ========================================== -->
+
+            <g class="sparkle one">
+
+                <path
+                    class="blue"
+
+                    d="
+                    M315 255
+
+                    L323 275
+
+                    L343 283
+
+                    L323 291
+
+                    L315 312
+
+                    L307 291
+
+                    L287 283
+
+                    L307 275
+
+                    Z
+                    "
+                />
+
+            </g>
+
+
+            <!-- =========================================
+                 SPARKLE 2
+            ========================================== -->
+
+            <g class="sparkle two">
+
+                <path
+                    class="blue"
+
+                    d="
+                    M355 220
+
+                    L363 240
+
+                    L383 248
+
+                    L363 256
+
+                    L355 276
+
+                    L347 256
+
+                    L327 248
+
+                    L347 240
+
+                    Z
+                    "
+                />
+
+            </g>
+
+
+            <!-- =========================================
+                 CLEAN
+            ========================================== -->
+
+            <text
+                class="cleanText"
+
+                x="55"
+                y="510"
+
+                font-size="72"
+
+                font-weight="400"
+
+                letter-spacing="2"
+
+                fill="#101b43"
+            >
+                clean
+            </text>
+
+
+            <!-- =========================================
+                 Z
+            ========================================== -->
+
+            <text
+                class="zText"
+
+                x="365"
+                y="510"
+
+                font-size="72"
+
+                font-weight="400"
+
+                fill="#65a8ed"
+            >
+                Z
+            </text>
+
+
+        </svg>
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     WASHING MACHINE AUDIO
+===================================================== -->
+
+<audio
+    id="washingSound"
+    preload="auto"
+>
+
+    <source
+        src="sounds/washing-machine.mp3"
+        type="audio/mpeg"
+    >
+
+</audio>
+
+
+<!-- =====================================================
+     REPLAY
+===================================================== -->
+
+<button
+    class="replay"
+    onclick="restartAnimation()"
+>
+    Replay
+</button>
+
+
+
+<script>
+
+/* =====================================================
+   AUDIO
+===================================================== */
+
+const washingSound =
+    document.getElementById("washingSound");
+
+
+/*
+    Browsers normally block autoplay audio.
+
+    Therefore we wait for the user's first
+    interaction with the page.
+*/
+
+let userInteracted = false;
+
+
+document.addEventListener(
+    "pointerdown",
+
+    function() {
+
+        userInteracted = true;
+
+        /*
+            If the user taps before 2.8 seconds,
+            the sound will still play at the correct
+            animation time.
+        */
+
+    },
+
+    { once: true }
+);
+
+
+/* =====================================================
+   PLAY WASHING MACHINE
+===================================================== */
+
+function playWashingMachine() {
+
+    if (!userInteracted) {
+
+        return;
+
+    }
+
+
+    washingSound.currentTime = 0;
+
+    washingSound.volume = 0.45;
+
+
+    washingSound.play().catch(
+        function(error) {
+
+            console.log(
+                "Audio could not start:",
+                error
+            );
+
+        }
+    );
+
+
+    /*
+        Fade the washing-machine sound out
+        after approximately 2 seconds.
+    */
+
+    setTimeout(
+        fadeOutSound,
+        2000
+    );
+}
+
+
+/* =====================================================
+   FADE OUT SOUND
+===================================================== */
+
+function fadeOutSound() {
+
+    const fade =
+        setInterval(
+            function() {
+
+                if (
+                    washingSound.volume > 0.03
+                ) {
+
+                    washingSound.volume -= 0.03;
+
+                }
+
+                else {
+
+                    washingSound.volume = 0;
+
+                    washingSound.pause();
+
+                    clearInterval(fade);
+
+                }
+
+            },
+            100
+        );
+}
+
+
+/* =====================================================
+   START SOUND AT END OF LOGO
+===================================================== */
+
+
+/*
+    Logo animation finishes around 2.7 seconds.
+
+    Washing-machine sound starts at 2.8 seconds.
+*/
+
+setTimeout(
+    playWashingMachine,
+    2800
+);
+
+
+/* =====================================================
+   REPLAY
+===================================================== */
+
+function restartAnimation() {
+
+    /*
+        Reloading the page is the simplest way
+        to restart every CSS animation exactly.
+    */
+
+    location.reload();
+}
+
+</script>
+
+</body>
+  </html>
